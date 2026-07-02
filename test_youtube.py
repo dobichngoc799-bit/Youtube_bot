@@ -1,9 +1,14 @@
 from services.youtube_client import YouTubeClient
 
-youtube = YouTubeClient()
 
-result = youtube.get_channel(
-    "UCX6OQ3DkcsbYNE6H8uQQuVA"
-)
+def main():
+    youtube = YouTubeClient()
 
-print(result)
+    data = youtube.get_channel_by_handle("MrBeast")
+    channel = youtube.normalize_channel(data)
+
+    print(channel)
+
+
+if __name__ == "__main__":
+    main()

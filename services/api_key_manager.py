@@ -24,17 +24,30 @@ class ApiKeyManager:
         return True, "Đã thêm API key."
 
     def get_available_key(self):
-        key = (
+        keys = (
             self.db.query(ApiKey)
             .filter(ApiKey.is_active == True)
-            .order_by(ApiKey.last_used.asc().nullsfirst())
+            .order_by(ApiKey.rotation_index.asc(), ApiKey.id.asc())
+            .all()
+        )
+
+        if not keys:
+            return None
+
+        key = keys[0]
+
+        key.last_used = datetime.utcnow()
+
+        max_index = (
+            self.db.query(ApiKey.rotation_index)
+            .order_by(ApiKey.rotation_index.desc())
             .first()
         )
 
-        if not key:
-            return None
+        current_max = max_index[0] if max_index else 0
 
-        key.last_used = datetime.utcnow()
+        key.rotation_index = current_max + 1
+
         self.db.commit()
 
         return key.api_key
