@@ -44,7 +44,7 @@ async def websub_renew_loop():
 async def post_init(app):
     init_db()
     renew_all_websub()
-    app.create_task(websub_renew_loop())
+    asyncio.create_task(websub_renew_loop())
 
 
 def main():
