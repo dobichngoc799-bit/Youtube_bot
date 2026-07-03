@@ -81,8 +81,20 @@ class ChannelService:
         if not channel:
             return False, "Không tìm thấy kênh."
 
+        channel_name = channel.channel_name
+        youtube_channel_id = channel.channel_id
+
+        result = self.websub.unsubscribe(youtube_channel_id)
+
         self.db.delete(channel)
         self.db.commit()
 
-        return True, f"Đã xóa kênh: {channel.channel_name}"
+        if not result["success"]:
+            return (
+                True,
+                f"Đã xóa kênh: {channel_name}\n"
+                f"Nhưng hủy WebSub thất bại: {result['status_code']}"
+            )
+
+        return True, f"Đã xóa kênh và hủy WebSub: {channel_name}"
     
