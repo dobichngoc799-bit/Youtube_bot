@@ -16,11 +16,17 @@ class Config:
 
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data.db")
 
+    WEBSUB_CALLBACK_URL = os.getenv(
+    "WEBSUB_CALLBACK_URL",
+    "https://bot.newwave.io.vn/webhook",
+    )
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", 8000))
 
     APP_NAME = os.getenv("APP_NAME", "YouTube Notify Bot")
     DEBUG = os.getenv("DEBUG", "False") == "True"
+    
+    
 
 
 config = Config()

@@ -1,11 +1,18 @@
 from models import Channel
 from services.youtube_client import YouTubeClient
+from config import config
+from services.websub_service import WebSubService
+
 
 
 class ChannelService:
     def __init__(self, db):
         self.db = db
         self.youtube = YouTubeClient()
+
+        self.websub = WebSubService(
+        config.WEBSUB_CALLBACK_URL
+    )
 
     def add_channel(self, channel_input: str):
         channel_input = channel_input.strip()
@@ -47,7 +54,15 @@ class ChannelService:
         self.db.add(channel)
         self.db.commit()
 
-        return True, f"Đã thêm kênh: {channel.channel_name}"
+        result = self.websub.subscribe(channel.channel_id)
+
+        if not result["success"]:
+            return (
+                False,
+                f"Đã lưu kênh nhưng đăng ký WebSub thất bại:\n{result['body']}"
+            )
+
+        return True, f"Đã thêm và đăng ký WebSub cho: {channel.channel_name}"
 
     def list_channels(self):
         return (
@@ -70,3 +85,4 @@ class ChannelService:
         self.db.commit()
 
         return True, f"Đã xóa kênh: {channel.channel_name}"
+    
