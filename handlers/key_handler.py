@@ -6,12 +6,12 @@ from services.api_key_manager import ApiKeyManager
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
     
+
     await update.message.reply_text(
         "🤖 YouTube Notify Bot\n\n"
         "Bot đã hoạt động.\n\n"
-        f"Chat ID: {chat_id}\n\n"
+        
         "Gõ /help để xem danh sách lệnh."
     )
 
